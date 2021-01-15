@@ -33,22 +33,20 @@
 #include <stdlib.h>
 
 Linear::Linear() :
-		currentTableSize(0),
-		isTableSorted(false)
+		currentTableSize(0), isTableSorted(false)
 {
 
 }
 
-Linear::~Linear()
-{
+Linear::~Linear() {
 }
 
 bool Linear::addPoint(const float dataIn, const float keyIn)
 {
-	if(currentTableSize<MAX_TABLE_SIZE)
+	if (currentTableSize < MAX_TABLE_SIZE)
 	{
 		data[currentTableSize].data = dataIn;
-		data[currentTableSize].key  = keyIn;
+		data[currentTableSize].key = keyIn;
 
 		currentTableSize++;
 		isTableSorted = false;
@@ -63,44 +61,43 @@ bool Linear::addPoint(const float dataIn, const float keyIn)
 
 float Linear::getPoint(const float key)
 {
-	if(!isTableSorted)
+	if (!isTableSorted)
 	{
 		sortTable();
 	}
 
-	if(key<=data[0].key)return data[0].data;
-	if(key>=data[currentTableSize-1].key)return data[currentTableSize-1].data;
+	if (key <= data[0].key) return data[0].data;
+	if (key >= data[currentTableSize - 1].key) return data[currentTableSize - 1].data;
 
 	uint8_t index;
 
-	for(index=0;index<currentTableSize-2;index++)
+	for (index = 0; index < currentTableSize - 2; index++)
 	{
-		if( (data[index].key <= key) && (data[index+1].key>key) )
+		if ((data[index].key <= key) && (data[index + 1].key > key))
 		{
 			break;
 		}
 	}
 
 	float key0 = data[index].key;
-	float key1 = data[index+1].key;
+	float key1 = data[index + 1].key;
 
-	float ratio0 = 1.0f - (key-key0);
-	float ratio1 = 1.0f - (key1-key);
+	float ratio0 = 1.0f - (key - key0);
+	float ratio1 = 1.0f - (key1 - key);
 
-	return (data[index].data*ratio0) + (data[index+1].data*ratio1);
+	return (data[index].data * ratio0) + (data[index + 1].data * ratio1);
 }
 
-
-int compareDataEntry (const void * a, const void * b)
+int compareDataEntry(const void *a, const void *b)
 {
-  if ( ((Linear::DataEntry*)a)->key <  ((Linear::DataEntry*)b)->key ) return -1;
-  if ( ((Linear::DataEntry*)a)->key >  ((Linear::DataEntry*)b)->key ) return 1;
-  return 0;
+	if (((Linear::DataEntry*) a)->key < ((Linear::DataEntry*) b)->key)	return -1;
+	if (((Linear::DataEntry*) a)->key > ((Linear::DataEntry*) b)->key)	return 1;
+	return 0;
 }
 
 void Linear::sortTable()
 {
-	qsort (data, currentTableSize, sizeof(DataEntry), compareDataEntry);
+	qsort(data, currentTableSize, sizeof(DataEntry), compareDataEntry);
 	isTableSorted = true;
 }
 
